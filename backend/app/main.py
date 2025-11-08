@@ -1,9 +1,11 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 from fastapi.responses import JSONResponse
 import os
 
 from app.config import settings
+from app.controllers import video_router
 
 # Create FastAPI application
 app = FastAPI(
@@ -25,6 +27,21 @@ app.add_middleware(
 os.makedirs(settings.uploads_dir, exist_ok=True)
 os.makedirs(settings.outputs_dir, exist_ok=True)
 os.makedirs(settings.data_dir, exist_ok=True)
+
+# Mount static file directories
+app.mount(
+    f"/{settings.uploads_dir}", 
+    StaticFiles(directory=settings.uploads_dir), 
+    name="uploads"
+)
+app.mount(
+    f"/{settings.outputs_dir}", 
+    StaticFiles(directory=settings.outputs_dir), 
+    name="outputs"
+)
+
+# Include routers
+app.include_router(video_router, prefix="/api/video", tags=["Video Management"])
 
 # Root endpoint
 @app.get("/", tags=["Root"])
