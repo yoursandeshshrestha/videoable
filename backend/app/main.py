@@ -5,7 +5,7 @@ from fastapi.responses import JSONResponse
 import os
 
 from app.config import settings
-from app.controllers import video_router, chat_router
+from app.controllers import video_router, chat_router, export_router
 
 # Create FastAPI application
 app = FastAPI(
@@ -43,6 +43,7 @@ app.mount(
 # Include routers
 app.include_router(video_router, prefix="/api/video", tags=["Video Management"])
 app.include_router(chat_router, prefix="/api/chat", tags=["Chat & Editing"])
+app.include_router(export_router, prefix="/api/export", tags=["Export"])
 
 # Root endpoint
 @app.get("/", tags=["Root"])
